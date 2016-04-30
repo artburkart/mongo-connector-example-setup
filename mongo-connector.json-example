@@ -1,0 +1,62 @@
+{
+    "__comment__": "Configuration options starting with '__' are disabled",
+    "__comment__": "To enable them, remove the preceding '__'",
+
+    "__comment__": "You need to create a user than can read the oplog",
+    "mainAddress": "mongodb://db_url_without_username_password:db_port/admin",
+
+
+    "__comment__": "NOTE(arthurb): Follow these steps to re-sync elasticsearch from scratch",
+    "__comment__": "Delete this oplog.timestamp file",
+    "oplogFile": "/var/log/mongo-connector/oplog.timestamp",
+
+    "__comment__": "set 'noDump' to true",
+    "__comment__": "and restart the service 'sudo service mongo-connector restart'",
+    "__comment__": "When it's all sync'd up, turn it off again, set 'noDump' to false, and start it up",
+    "noDump": false,
+    "batchSize": -1,
+    "verbosity": 3,
+    "continueOnError": false,
+
+    "logging": {
+        "type": "file",
+        "filename": "/var/log/mongo-connector/mongo-connector.log",
+        "__format": "%(asctime)s [%(levelname)s] %(name)s:%(lineno)d - %(message)s",
+        "__rotationWhen": "D",
+        "__rotationInterval": 1,
+        "__rotationBackups": 10,
+
+        "__type": "syslog",
+        "__host": "localhost:514"
+    },
+
+    "authentication": {
+        "adminUsername": "oplog-reader-username",
+        "password": "oplog-readers-password"
+    },
+
+    "__comment__": "For more information about SSL with MongoDB, please see http://docs.mongodb.org/manual/tutorial/configure-ssl-clients/",
+    "ssl": {
+        "sslCertificatePolicy": "required"
+    },
+
+    "__comment__": "The database name, followed by the collection name should go here in namespaces.",
+    "namespaces": {
+        "include": [
+            "database_name.cars",
+            "database_name.trucks",
+            "database_name.boats",
+            "database_name.zebras"
+        ]
+    },
+
+    "docManagers": [
+        {
+            "docManager": "elastic_doc_manager",
+            "targetURL": "https://name-of-aws-es-instance-and-some-gobbledy-gook.us-east-1.es.amazonaws.com",
+            "__bulkSize": 1000,
+            "__uniqueKey": "_id",
+            "__autoCommitInterval": null
+        }
+    ]
+}
